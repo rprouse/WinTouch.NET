@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
-using WinTouch;
 
 namespace Alteridem.WinTouch.Demo
 {

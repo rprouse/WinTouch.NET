@@ -26,7 +26,7 @@ using Microsoft.Win32.SafeHandles;
 
 #endregion
 
-namespace WinTouch
+namespace Alteridem.WinTouch
 {
     /// <summary>
     /// Utility class to wrap an unmanaged DLL and be responsible for freeing it.

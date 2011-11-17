@@ -2,7 +2,7 @@
 using System.Security.Permissions;
 using System.Windows.Forms;
 
-namespace WinTouch
+namespace Alteridem.WinTouch
 {
     [PermissionSet( SecurityAction.Demand, Name = "FullTrust" )]
     public sealed class TouchListener : NativeWindow

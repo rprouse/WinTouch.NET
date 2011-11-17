@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace WinTouch
+namespace Alteridem.WinTouch
 {
     internal static class NativeMethods
     {

@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 
-namespace WinTouch
+namespace Alteridem.WinTouch
 {
     #region GestureEventArgs Class
 
