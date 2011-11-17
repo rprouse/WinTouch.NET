@@ -37,6 +37,7 @@
             this.BackColor = System.Drawing.SystemColors.Window;
             this.Name = "TouchControl";
             this.Size = new System.Drawing.Size(334, 270);
+            this.Load += new System.EventHandler(this.OnLoad);
             this.ResumeLayout(false);
 
         }

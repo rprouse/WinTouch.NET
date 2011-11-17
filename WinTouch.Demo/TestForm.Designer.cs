@@ -33,6 +33,7 @@
             // 
             // _touchControl
             // 
+            this._touchControl.BackColor = System.Drawing.SystemColors.Window;
             this._touchControl.Dock = System.Windows.Forms.DockStyle.Fill;
             this._touchControl.Location = new System.Drawing.Point(0, 0);
             this._touchControl.Name = "_touchControl";
@@ -47,6 +48,7 @@
             this.Controls.Add(this._touchControl);
             this.Name = "TestForm";
             this.Text = "Test Form";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.ResumeLayout(false);
 
       }
