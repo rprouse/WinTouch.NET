@@ -129,11 +129,11 @@ namespace Alteridem.WinTouch.Demo
             string msg = string.Format( "Rotate Loc:({0},{1}) Angle:{2}", e.Location.X, e.Location.Y, e.Degrees );
             Debug.WriteLine( msg );
 
-            if ( e.Begin )
+            if ( e.End )
             {
-                _lastRotation = (float)e.Degrees;
+                _lastRotation = 0;
             }
-            else
+            else if ( !e.Begin )
             {
                 float change = _lastRotation - (float)e.Degrees;
                 _rotation += change;
