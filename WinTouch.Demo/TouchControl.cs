@@ -26,7 +26,6 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
 #endregion
@@ -36,7 +35,7 @@ namespace Alteridem.WinTouch.Demo
     public partial class TouchControl : UserControl
     {
         // Our touch listener
-        private TouchListener _touch;
+        private readonly TouchListener _touch;
 
         // Size, location and rotation of the square
         private Point _location;
@@ -49,8 +48,10 @@ namespace Alteridem.WinTouch.Demo
         private long _lastZoom;
 
         // Brushes
-        private Brush _backBrush = Brushes.White;
-        private Brush _foreBrush = Brushes.Blue;
+        private readonly Brush[] _backBrushes = { Brushes.White, Brushes.AntiqueWhite, Brushes.Bisque, Brushes.Wheat, Brushes.Bisque, Brushes.AntiqueWhite };
+        private readonly Brush[] _foreBrushes = { Brushes.Blue, Brushes.DodgerBlue, Brushes.CornflowerBlue, Brushes.LightSteelBlue, Brushes.CornflowerBlue, Brushes.DodgerBlue };
+        private int _backBrush;
+        private int _foreBrush;
 
         public TouchControl()
         {
@@ -112,6 +113,15 @@ namespace Alteridem.WinTouch.Demo
         {
             string msg = string.Format( "PressAndTap Loc:({0},{1}) Distance:{2})", e.Location.X, e.Location.Y, e.Distance );
             Debug.WriteLine( msg );
+
+            if ( e.Begin )
+            {
+                if (++_backBrush >= _backBrushes.Length)
+                {
+                    _backBrush = 0;
+                }
+                Invalidate();
+            }
         }
 
         void OnRotate( object sender, RotateEventArgs e )
@@ -136,6 +146,15 @@ namespace Alteridem.WinTouch.Demo
         {
             string msg = string.Format( "TwoFingerTap Loc:({0},{1}) Distance:{2}", e.Location.X, e.Location.Y, e.Distance );
             Debug.WriteLine( msg );
+
+            if ( e.Begin )
+            {
+                if (++_foreBrush >= _foreBrushes.Length)
+                {
+                    _foreBrush = 0;
+                }
+                Invalidate();
+            }
         }
 
         void OnZoom( object sender, ZoomEventArgs e )
@@ -159,13 +178,17 @@ namespace Alteridem.WinTouch.Demo
         protected override void OnPaint( PaintEventArgs e )
         {
             // Draw Background
-            e.Graphics.FillRectangle( _backBrush, 0, 0, Width, Height );
+            e.Graphics.FillRectangle( _backBrushes[_backBrush], 0, 0, Width, Height );
+
+            // Draw Info
+            string info = string.Format("Pos:{0} Size:{1} Rotation:{2}", _location, _size, _rotation);
+            e.Graphics.DrawString( info, SystemFonts.DefaultFont, Brushes.Black, 5, 5 );
 
             // Draw Square
             e.Graphics.TranslateTransform( _location.X, _location.Y );
             e.Graphics.RotateTransform( _rotation );
             e.Graphics.TranslateTransform( -_location.X, -_location.Y );
-            e.Graphics.FillRectangle( _foreBrush, _location.X - _size / 2, _location.Y - _size / 2, _size, _size );
+            e.Graphics.FillRectangle( _foreBrushes[_foreBrush], _location.X - _size / 2, _location.Y - _size / 2, _size, _size );
         }
     }
 }
