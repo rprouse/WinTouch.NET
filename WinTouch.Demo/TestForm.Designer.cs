@@ -1,4 +1,4 @@
-﻿namespace WinTouch
+﻿namespace Alteridem.WinTouch.Demo
 {
    partial class TestForm
    {

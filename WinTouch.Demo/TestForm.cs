@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics;
 using System.Windows.Forms;
+using WinTouch;
 
-namespace WinTouch
+namespace Alteridem.WinTouch.Demo
 {
     public partial class TestForm : Form
     {

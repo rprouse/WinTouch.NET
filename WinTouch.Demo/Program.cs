@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace WinTouch
+namespace Alteridem.WinTouch.Demo
 {
     static class Program
     {
