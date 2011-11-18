@@ -106,63 +106,19 @@ namespace Alteridem.WinTouch
                         switch ( (GestureId)info.id )
                         {
                             case GestureId.Pan:
-                                if ( Pan != null )
-                                {
-                                    if ( info.Begin )
-                                    {
-                                        _lastPanPoint = new Point( info.location.x, info.location.y );
-                                    }
-                                    var args = new PanEventArgs( info, _lastPanPoint );
-                                    _lastPanPoint = new Point( info.location.x, info.location.y );
-                                    Pan( this, args );
-                                    handled = args.Handled;
-                                }
+                                handled = OnPan( info );
                                 break;
                             case GestureId.PressAndTap:
-                                if ( PressAndTap != null )
-                                {
-                                    var args = new PressAndTapEventArgs( info );
-                                    PressAndTap( this, args );
-                                    handled = args.Handled;
-                                }
+                                handled = OnPressAndTap( info );
                                 break;
                             case GestureId.Rotate:
-                                if ( Rotate != null )
-                                {
-                                    if ( info.Begin )
-                                    {
-                                        _lastRotation = 0;
-                                    }
-                                    var args = new RotateEventArgs( info, _lastRotation );
-                                    if ( !info.Begin )
-                                    {
-                                        // First rotation is the angle the fingers are at, so don't use it
-                                        _lastRotation = args.TotalAngle;
-                                    }
-                                    Rotate( this, args );
-                                    handled = args.Handled;
-                                }
+                                handled = OnRotate( info );
                                 break;
                             case GestureId.TwoFingerTap:
-                                if ( TwoFingerTap != null )
-                                {
-                                    var args = new TwoFingerTapEventArgs( info );
-                                    TwoFingerTap( this, args );
-                                    handled = args.Handled;
-                                }
+                                handled = OnTwoFingerTap( info );
                                 break;
                             case GestureId.Zoom:
-                                if ( Zoom != null )
-                                {
-                                    if ( info.Begin )
-                                    {
-                                        _lastZoom = info.arguments;
-                                    }
-                                    var args = new ZoomEventArgs( info, _lastZoom );
-                                    _lastZoom = args.Distance;
-                                    Zoom( this, args );
-                                    handled = args.Handled;
-                                }
+                                handled = OnZoom( info );
                                 break;
                         }
                         if ( handled )
@@ -176,6 +132,80 @@ namespace Alteridem.WinTouch
             {
                 base.WndProc( ref m );
             }
+        }
+
+        private bool OnPan( GestureInfo info )
+        {
+            if ( Pan != null )
+            {
+                if ( info.Begin )
+                {
+                    _lastPanPoint = new Point( info.location.x, info.location.y );
+                }
+                var args = new PanEventArgs( info, _lastPanPoint );
+                _lastPanPoint = new Point( info.location.x, info.location.y );
+                Pan( this, args );
+                return args.Handled;
+            }
+            return false;
+        }
+
+        private bool OnPressAndTap( GestureInfo info )
+        {
+            if ( PressAndTap != null )
+            {
+                var args = new PressAndTapEventArgs( info );
+                PressAndTap( this, args );
+                return args.Handled;
+            }
+            return false;
+        }
+
+        private bool OnRotate( GestureInfo info )
+        {
+            if ( Rotate != null )
+            {
+                if ( info.Begin )
+                {
+                    _lastRotation = 0;
+                }
+                var args = new RotateEventArgs( info, _lastRotation );
+                if ( !info.Begin )
+                {
+                    // First rotation is the angle the fingers are at, so don't use it
+                    _lastRotation = args.TotalAngle;
+                }
+                Rotate( this, args );
+                return args.Handled;
+            }
+            return false;
+        }
+
+        private bool OnTwoFingerTap( GestureInfo info )
+        {
+            if ( TwoFingerTap != null )
+            {
+                var args = new TwoFingerTapEventArgs( info );
+                TwoFingerTap( this, args );
+                return args.Handled;
+            }
+            return false;
+        }
+
+        private bool OnZoom( GestureInfo info )
+        {
+            if ( Zoom != null )
+            {
+                if ( info.Begin )
+                {
+                    _lastZoom = info.arguments;
+                }
+                var args = new ZoomEventArgs( info, _lastZoom );
+                _lastZoom = args.Distance;
+                Zoom( this, args );
+                return args.Handled;
+            }
+            return false;
         }
 
         #endregion
