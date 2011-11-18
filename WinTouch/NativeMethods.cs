@@ -199,7 +199,7 @@ namespace Alteridem.WinTouch
     }
 
     [StructLayout( LayoutKind.Sequential )]
-    internal struct Points
+    public struct Points
     {
         public short x;
         public short y;
@@ -249,7 +249,7 @@ namespace Alteridem.WinTouch
     ///   argument information. 
     /// </remarks>
     [StructLayout( LayoutKind.Sequential )]
-    internal struct GestureInfo
+    public struct GestureInfo
     {
         /// <summary>
         /// The size of the structure, in bytes. The caller must set this.
@@ -287,5 +287,29 @@ namespace Alteridem.WinTouch
         /// The size, in bytes, of extra arguments that accompany this gesture.
         /// </summary>
         public int extraArguments;
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="GestureFlags"/> Begin is set.
+        /// </summary>
+        public bool Begin
+        {
+            get { return ((GestureFlags)flags & GestureFlags.Begin) == GestureFlags.Begin; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="GestureFlags"/> End is set.
+        /// </summary>
+        public bool End
+        {
+            get { return ((GestureFlags)flags & GestureFlags.End) == GestureFlags.End; }
+        }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="GestureFlags"/> Inertia is set
+        /// </summary>
+        public bool Inertia
+        {
+            get { return ((GestureFlags)flags & GestureFlags.Inertia) == GestureFlags.Inertia; }
+        }
     }
 }

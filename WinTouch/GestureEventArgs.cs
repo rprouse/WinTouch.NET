@@ -40,7 +40,7 @@ namespace Alteridem.WinTouch
         internal GestureEventArgs( GestureInfo info )
         {
             Location = new Point( info.location.x, info.location.y );
-            Flags = (GestureFlags)info.flags;
+            Info = info;
             Handled = true;
         }
 
@@ -80,7 +80,7 @@ namespace Alteridem.WinTouch
 
         #region Properties
 
-        protected GestureFlags Flags { get; set; }
+        protected GestureInfo Info { get; set; }
 
         /// <summary>
         /// Gets the location of the gesture in Screen (not client) coordinates.
@@ -92,7 +92,7 @@ namespace Alteridem.WinTouch
         /// </summary>
         public bool Begin
         {
-            get { return (Flags & GestureFlags.Begin) == GestureFlags.Begin; }
+            get { return Info.Begin; }
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Alteridem.WinTouch
         /// </summary>
         public bool End
         {
-            get { return (Flags & GestureFlags.End) == GestureFlags.End; }
+            get { return Info.End; }
         }
 
         /// <summary>
@@ -120,11 +120,12 @@ namespace Alteridem.WinTouch
     /// </summary>
     public class PanEventArgs : GestureEventArgs
     {
-        internal PanEventArgs( GestureInfo info )
+        internal PanEventArgs( GestureInfo info, Point lastPanPoint )
             : base( info )
         {
             int hiword = HiDWord( info.arguments );
             InertiaVector = new Point( LoWord( hiword ), HiWord( hiword ) );
+            PanOffset = new Point( Location.X - lastPanPoint.X, Location.Y - lastPanPoint.Y );
         }
 
         /// <summary>
@@ -132,10 +133,15 @@ namespace Alteridem.WinTouch
         /// </summary>
         public bool Inertia
         {
-            get { return (Flags & GestureFlags.Inertia) == GestureFlags.Inertia; }
+            get { return Info.Inertia; }
         }
 
         public Point InertiaVector { get; private set; }
+
+        /// <summary>
+        /// Gets the pan offset since the last pan message.
+        /// </summary>
+        public Point PanOffset { get; private set; }
     }
 
     #endregion
@@ -147,16 +153,22 @@ namespace Alteridem.WinTouch
     /// </summary>
     public class ZoomEventArgs : GestureEventArgs
     {
-        internal ZoomEventArgs( GestureInfo info )
+        internal ZoomEventArgs( GestureInfo info, long lastZoomDistance )
             : base( info )
         {
             Distance = info.arguments;
+            PercentChange = (double)Distance / lastZoomDistance;
         }
 
         /// <summary>
         /// Gets the distance between the two points as they are being zoomed.
         /// </summary>
         public long Distance { get; private set; }
+
+        /// <summary>
+        /// Gets the percent changed since the last zoom message
+        /// </summary>
+        public double PercentChange { get; private set; }
     }
 
     #endregion
@@ -190,11 +202,14 @@ namespace Alteridem.WinTouch
     /// </summary>
     public class RotateEventArgs : GestureEventArgs
     {
-        internal RotateEventArgs( GestureInfo info )
+        internal RotateEventArgs( GestureInfo info, double lastRotation )
             : base( info )
         {
             int loword = LoDWord( info.arguments );
-            Angle = RotateAngleFromArgument( loword );
+            TotalAngle = RotateAngleFromArgument( loword );
+            Angle = TotalAngle - lastRotation;
+            string msg = string.Format("Total:{0} Angle:{1} Last:{2}", TotalAngle, Angle, lastRotation );
+            System.Diagnostics.Debug.WriteLine( msg );
         }
 
         /// <summary>
@@ -208,16 +223,34 @@ namespace Alteridem.WinTouch
         }
 
         /// <summary>
-        /// Gets the angle of rotation in Radians
+        /// Gets the angle of rotation in Radians since the beginning of the gesture
+        /// </summary>
+        public double TotalAngle { get; private set; }
+
+        /// <summary>
+        /// Gets the angle of rotation in Degrees since the beginning of the gesture
+        /// </summary>
+        public double TotalDegrees
+        {
+            get { return RadiandsToDegrees( TotalAngle ); }
+        }
+
+        /// <summary>
+        /// Gets the angle of rotation in Radians since the last rotation message
         /// </summary>
         public double Angle { get; private set; }
 
         /// <summary>
-        /// Gets the angle of rotation in Degrees
+        /// Gets the angle of rotation in Degrees since the last rotation message
         /// </summary>
         public double Degrees
         {
-            get { return Angle * 180.0 / Math.PI; }
+            get { return RadiandsToDegrees( Angle ); }
+        }
+
+        private double RadiandsToDegrees( double radians )
+        {
+            return radians * 180.0 / Math.PI;
         }
     }
 

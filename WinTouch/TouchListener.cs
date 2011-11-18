@@ -24,6 +24,7 @@
 #region Using Directives
 
 using System;
+using System.Drawing;
 using System.Security.Permissions;
 using System.Windows.Forms;
 
@@ -34,6 +35,15 @@ namespace Alteridem.WinTouch
     [PermissionSet( SecurityAction.Demand, Name = "FullTrust" )]
     public sealed class TouchListener : NativeWindow
     {
+        #region Private Members
+
+        // Saved state
+        private Point _lastPanPoint;
+        private double _lastRotation;
+        private long _lastZoom;
+
+        #endregion
+
         #region Public Events
 
         public event EventHandler<PanEventArgs> Pan;
@@ -98,7 +108,12 @@ namespace Alteridem.WinTouch
                             case GestureId.Pan:
                                 if ( Pan != null )
                                 {
-                                    var args = new PanEventArgs( info );
+                                    if ( info.Begin )
+                                    {
+                                        _lastPanPoint = new Point( info.location.x, info.location.y );
+                                    }
+                                    var args = new PanEventArgs( info, _lastPanPoint );
+                                    _lastPanPoint = new Point( info.location.x, info.location.y );
                                     Pan( this, args );
                                     handled = args.Handled;
                                 }
@@ -114,7 +129,16 @@ namespace Alteridem.WinTouch
                             case GestureId.Rotate:
                                 if ( Rotate != null )
                                 {
-                                    var args = new RotateEventArgs( info );
+                                    if ( info.Begin )
+                                    {
+                                        _lastRotation = 0;
+                                    }
+                                    var args = new RotateEventArgs( info, _lastRotation );
+                                    if ( !info.Begin )
+                                    {
+                                        // First rotation is the angle the fingers are at, so don't use it
+                                        _lastRotation = args.TotalAngle;
+                                    }
                                     Rotate( this, args );
                                     handled = args.Handled;
                                 }
@@ -130,7 +154,12 @@ namespace Alteridem.WinTouch
                             case GestureId.Zoom:
                                 if ( Zoom != null )
                                 {
-                                    var args = new ZoomEventArgs( info );
+                                    if ( info.Begin )
+                                    {
+                                        _lastZoom = info.arguments;
+                                    }
+                                    var args = new ZoomEventArgs( info, _lastZoom );
+                                    _lastZoom = args.Distance;
                                     Zoom( this, args );
                                     handled = args.Handled;
                                 }

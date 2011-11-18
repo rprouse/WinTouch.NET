@@ -40,12 +40,7 @@ namespace Alteridem.WinTouch.Demo
         // Size, location and rotation of the square
         private Point _location;
         private int _size;
-        private float _rotation;
-
-        // Saved state
-        private Point _lastPanPoint;
-        private float _lastRotation;
-        private long _lastZoom;
+        private double _rotation;
 
         // Brushes
         private readonly Brush[] _backBrushes = { Brushes.White, Brushes.AntiqueWhite, Brushes.Bisque, Brushes.Wheat, Brushes.Bisque, Brushes.AntiqueWhite };
@@ -73,6 +68,8 @@ namespace Alteridem.WinTouch.Demo
 
         private void OnLoad( object sender, EventArgs e )
         {
+            // Center the square on the form and make it half the width
+            // of the shortest side
             _size = Math.Min( Width, Height ) / 2;
             _location = new Point( Width / 2, Height / 2 );
             _rotation = 0;
@@ -84,15 +81,9 @@ namespace Alteridem.WinTouch.Demo
                                        e.InertiaVector.X, e.InertiaVector.Y );
             Debug.WriteLine( msg );
 
-            if ( e.Begin )
+            if ( !e.Begin )
             {
-                _lastPanPoint = e.Location;
-            }
-            else
-            {
-                var offset = new Point( e.Location.X - _lastPanPoint.X, e.Location.Y - _lastPanPoint.Y );
-                _location.Offset( offset );
-                _lastPanPoint = e.Location;
+                _location.Offset( e.PanOffset );
 
                 // Make sure it doesn't leave the screen
                 if ( _location.X < 0 )
@@ -116,7 +107,7 @@ namespace Alteridem.WinTouch.Demo
 
             if ( e.Begin )
             {
-                if (++_backBrush >= _backBrushes.Length)
+                if ( ++_backBrush >= _backBrushes.Length )
                 {
                     _backBrush = 0;
                 }
@@ -126,18 +117,12 @@ namespace Alteridem.WinTouch.Demo
 
         void OnRotate( object sender, RotateEventArgs e )
         {
-            string msg = string.Format( "Rotate Loc:({0},{1}) Angle:{2}", e.Location.X, e.Location.Y, e.Degrees );
+            string msg = string.Format( "Rotate Loc:({0},{1}) Angle:{2}", e.Location.X, e.Location.Y, e.TotalDegrees );
             Debug.WriteLine( msg );
 
-            if ( e.End )
+            if ( !e.Begin && !e.End )
             {
-                _lastRotation = 0;
-            }
-            else if ( !e.Begin )
-            {
-                float change = _lastRotation - (float)e.Degrees;
-                _rotation += change;
-                _lastRotation = (float)e.Degrees;
+                _rotation -= e.Degrees;
                 Invalidate();
             }
         }
@@ -149,7 +134,7 @@ namespace Alteridem.WinTouch.Demo
 
             if ( e.Begin )
             {
-                if (++_foreBrush >= _foreBrushes.Length)
+                if ( ++_foreBrush >= _foreBrushes.Length )
                 {
                     _foreBrush = 0;
                 }
@@ -162,15 +147,9 @@ namespace Alteridem.WinTouch.Demo
             string msg = string.Format( "Zoom Loc:({0},{1}) Distance:{2}", e.Location.X, e.Location.Y, e.Distance );
             Debug.WriteLine( msg );
 
-            if ( e.Begin )
+            if ( !e.Begin )
             {
-                _lastZoom = e.Distance;
-            }
-            else
-            {
-                float percent = (float)e.Distance / _lastZoom;
-                _size = (int)(_size * percent);
-                _lastZoom = e.Distance;
+                _size = (int)(_size * e.PercentChange);
                 Invalidate();
             }
         }
@@ -181,12 +160,12 @@ namespace Alteridem.WinTouch.Demo
             e.Graphics.FillRectangle( _backBrushes[_backBrush], 0, 0, Width, Height );
 
             // Draw Info
-            string info = string.Format("Pos:{0} Size:{1} Rotation:{2}", _location, _size, _rotation);
+            string info = string.Format( "Pos:{0} Size:{1} Rotation:{2}", _location, _size, _rotation );
             e.Graphics.DrawString( info, SystemFonts.DefaultFont, Brushes.Black, 5, 5 );
 
             // Draw Square
             e.Graphics.TranslateTransform( _location.X, _location.Y );
-            e.Graphics.RotateTransform( _rotation );
+            e.Graphics.RotateTransform( (float)_rotation );
             e.Graphics.TranslateTransform( -_location.X, -_location.Y );
             e.Graphics.FillRectangle( _foreBrushes[_foreBrush], _location.X - _size / 2, _location.Y - _size / 2, _size, _size );
         }
