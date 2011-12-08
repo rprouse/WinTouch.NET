@@ -1,6 +1,6 @@
 ﻿namespace Alteridem.WinTouch.Demo
 {
-    partial class TouchControl
+    partial class GestureControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,12 +30,12 @@
         {
             this.SuspendLayout();
             // 
-            // TouchControl
+            // GestureControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.Name = "TouchControl";
+            this.Name = "GestureControl";
             this.Size = new System.Drawing.Size(334, 270);
             this.Load += new System.EventHandler(this.OnLoad);
             this.ResumeLayout(false);

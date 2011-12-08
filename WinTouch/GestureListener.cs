@@ -33,7 +33,7 @@ using System.Windows.Forms;
 namespace Alteridem.WinTouch
 {
     [PermissionSet( SecurityAction.Demand, Name = "FullTrust" )]
-    public sealed class TouchListener : NativeWindow
+    public sealed class GestureListener : NativeWindow
     {
         #region Private Members
 
@@ -59,16 +59,16 @@ namespace Alteridem.WinTouch
         #region Construction
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TouchListener"/> class to receive all gestures.
+        /// Initializes a new instance of the <see cref="GestureListener"/> class to receive all gestures.
         /// </summary>
         /// <param name="parent">The parent.</param>
-        public TouchListener( Control parent )
+        public GestureListener( Control parent )
         {
             parent.HandleCreated += OnHandleCreated;
             parent.HandleDestroyed += OnHandleDestroyed;
         }
 
-        public TouchListener( Control parent, GestureConfig[] configs ) : this( parent )
+        public GestureListener( Control parent, GestureConfig[] configs ) : this( parent )
         {
             m_configs = configs;
         }

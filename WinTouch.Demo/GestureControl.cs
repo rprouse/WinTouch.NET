@@ -32,10 +32,10 @@ using System.Windows.Forms;
 
 namespace Alteridem.WinTouch.Demo
 {
-    public partial class TouchControl : UserControl
+    public partial class GestureControl : UserControl
     {
         // Our touch listener
-        private readonly TouchListener _touch;
+        private readonly GestureListener _gesture;
 
         // Size, location and rotation of the image
         private Point _location;
@@ -49,7 +49,7 @@ namespace Alteridem.WinTouch.Demo
         private readonly Brush[] _backBrushes = { Brushes.White, Brushes.AntiqueWhite, Brushes.Bisque, Brushes.Wheat, Brushes.Bisque, Brushes.AntiqueWhite };
         private int _backBrush;
 
-        public TouchControl()
+        public GestureControl()
         {
             InitializeComponent();
 
@@ -59,12 +59,12 @@ namespace Alteridem.WinTouch.Demo
                       ControlStyles.OptimizedDoubleBuffer, true );
 
             // Subscribe to all the touch events
-            _touch = new TouchListener( this );
-            _touch.Pan += OnPan;
-            _touch.PressAndTap += OnPressAndTap;
-            _touch.Rotate += OnRotate;
-            _touch.TwoFingerTap += OnTwoFingerTap;
-            _touch.Zoom += OnZoom;
+            _gesture = new GestureListener( this );
+            _gesture.Pan += OnPan;
+            _gesture.PressAndTap += OnPressAndTap;
+            _gesture.Rotate += OnRotate;
+            _gesture.TwoFingerTap += OnTwoFingerTap;
+            _gesture.Zoom += OnZoom;
 
             m_image = Properties.Resources.windows_logo;
         }
