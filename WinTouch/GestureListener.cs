@@ -63,13 +63,27 @@ namespace Alteridem.WinTouch
         /// </summary>
         /// <param name="parent">The parent.</param>
         public GestureListener( Control parent )
+            : this( parent, new[] { new GestureConfig( 0, GestureConfigurationFlag.GC_ALLGESTURES, 0 ) } )
         {
-            parent.HandleCreated += OnHandleCreated;
-            parent.HandleDestroyed += OnHandleDestroyed;
         }
 
-        public GestureListener( Control parent, GestureConfig[] configs ) : this( parent )
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GestureListener"/> class to receive specific gestures.
+        /// </summary>
+        /// <param name="parent">The parent.</param>
+        /// <param name="configs">The gesture configurations.</param>
+        public GestureListener( Control parent, GestureConfig[] configs )
         {
+            if ( parent.IsHandleCreated )
+            {
+                Initialize( parent );
+            }
+            else
+            {
+                parent.HandleCreated += OnHandleCreated;
+            }
+            parent.HandleDestroyed += OnHandleDestroyed;
+
             m_configs = configs;
         }
 
@@ -77,21 +91,19 @@ namespace Alteridem.WinTouch
 
         #region Private Methods
 
+        private void Initialize( Control parent )
+        {
+            AssignHandle( parent.Handle );
+            NativeMethods.SetGestureConfig( parent.Handle, m_configs );
+        }
+
         private void OnHandleCreated( object sender, EventArgs e )
         {
             // Window is now created, assign handle to NativeWindow.
             var control = sender as Control;
             if ( control != null )
             {
-                AssignHandle( control.Handle );
-                if ( m_configs != null )
-                {
-                    NativeMethods.SetGestureConfig( control.Handle, m_configs );
-                }
-                else
-                {
-                    NativeMethods.SetGestureConfig( control.Handle );
-                }
+                Initialize( control );
             }
         }
 
