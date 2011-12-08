@@ -41,7 +41,7 @@ namespace Alteridem.WinTouch
         private delegate bool CloseGestureInfoHandlePtr( IntPtr gestureInfoHandle );
 
         [UnmanagedFunctionPointer( CallingConvention.Cdecl )]
-        private delegate bool SetGestureConfigPtr( IntPtr hwnd, int reserved, uint ids, ref GestureConfig config, int size );
+        private delegate bool SetGestureConfigPtr( IntPtr hwnd, uint reserved, uint ids, GestureConfig[] configs, uint size );
 
         private static readonly GetGestureInfoPtr _pGetGestureInfoPtr;
         private static readonly CloseGestureInfoHandlePtr _pCloseGestureInfoHandle;
@@ -74,13 +74,13 @@ namespace Alteridem.WinTouch
         /// <param name="want">The want.</param>
         /// <param name="block">The block.</param>
         /// <returns></returns>
-        public static bool SetGestureConfig( IntPtr hwnd, int id, int want, int block )
+        public static bool SetGestureConfig( IntPtr hwnd, uint id, uint want, uint block )
         {
             if ( _pSetGestureConfig == null )
                 return false;
 
-            var config = new GestureConfig( id, want, block );
-            return _pSetGestureConfig( hwnd, 0, 1, ref config, Marshal.SizeOf( config ) );
+            var configs = new[] { new GestureConfig( id, want, block )  };
+            return _pSetGestureConfig( hwnd, 0, 1, configs, (uint)Marshal.SizeOf( typeof( GestureConfig ) ) );
         }
 
         /// <summary>
@@ -215,7 +215,7 @@ namespace Alteridem.WinTouch
     [StructLayout( LayoutKind.Sequential )]
     public struct GestureConfig
     {
-        public GestureConfig( int id, int want, int block )
+        public GestureConfig( uint id, uint want, uint block )
         {
             Id = id;
             Want = want;
@@ -225,17 +225,17 @@ namespace Alteridem.WinTouch
         /// <summary>
         /// The identifier for the type of configuration that will have messages enabled or disabled.
         /// </summary>
-        public int Id;
+        public uint Id;
 
         /// <summary>
         /// The messages to enable.
         /// </summary>
-        public int Want;
+        public uint Want;
 
         /// <summary>
         /// The messages to disable.
         /// </summary>
-        public int Block;
+        public uint Block;
     }
 
     /// <summary>
