@@ -37,16 +37,17 @@ namespace Alteridem.WinTouch.Demo
         // Our touch listener
         private readonly TouchListener _touch;
 
-        // Size, location and rotation of the square
+        // Size, location and rotation of the image
         private Point _location;
         private int _size;
         private double _rotation;
 
+        // An image to draw
+        private Image m_image;
+
         // Brushes
         private readonly Brush[] _backBrushes = { Brushes.White, Brushes.AntiqueWhite, Brushes.Bisque, Brushes.Wheat, Brushes.Bisque, Brushes.AntiqueWhite };
-        private readonly Brush[] _foreBrushes = { Brushes.Blue, Brushes.DodgerBlue, Brushes.CornflowerBlue, Brushes.LightSteelBlue, Brushes.CornflowerBlue, Brushes.DodgerBlue };
         private int _backBrush;
-        private int _foreBrush;
 
         public TouchControl()
         {
@@ -64,11 +65,18 @@ namespace Alteridem.WinTouch.Demo
             _touch.Rotate += OnRotate;
             _touch.TwoFingerTap += OnTwoFingerTap;
             _touch.Zoom += OnZoom;
+
+            m_image = Properties.Resources.windows_logo;
         }
 
         private void OnLoad( object sender, EventArgs e )
         {
-            // Center the square on the form and make it half the width
+            ResetImage();
+        }
+
+        private void ResetImage()
+        {
+            // Center the image on the form and make it half the width
             // of the shortest side
             _size = Math.Min( Width, Height ) / 2;
             _location = new Point( Width / 2, Height / 2 );
@@ -134,10 +142,7 @@ namespace Alteridem.WinTouch.Demo
 
             if ( e.Begin )
             {
-                if ( ++_foreBrush >= _foreBrushes.Length )
-                {
-                    _foreBrush = 0;
-                }
+                ResetImage();
                 Invalidate();
             }
         }
@@ -167,7 +172,7 @@ namespace Alteridem.WinTouch.Demo
             e.Graphics.TranslateTransform( _location.X, _location.Y );
             e.Graphics.RotateTransform( (float)_rotation );
             e.Graphics.TranslateTransform( -_location.X, -_location.Y );
-            e.Graphics.FillRectangle( _foreBrushes[_foreBrush], _location.X - _size / 2, _location.Y - _size / 2, _size, _size );
+            e.Graphics.DrawImage( m_image, _location.X - _size / 2, _location.Y - _size / 2, _size, _size );
         }
     }
 }
