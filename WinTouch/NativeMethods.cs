@@ -64,22 +64,33 @@ namespace Alteridem.WinTouch
         #region Public Interface
 
         /// <summary>
-        /// Sets the gesture config.
+        /// Registers the HWND to receive all gestures.
         /// </summary>
         /// <remarks>
         /// http://msdn.microsoft.com/en-us/library/windows/desktop/dd353231%28v=vs.85%29.aspx
         /// </remarks>
         /// <param name="hwnd">The HWND.</param>
-        /// <param name="id">The id.</param>
-        /// <param name="want">The want.</param>
-        /// <param name="block">The block.</param>
         /// <returns></returns>
-        public static bool SetGestureConfig( IntPtr hwnd, uint id, uint want, uint block )
+        public static bool SetGestureConfig( IntPtr hwnd )
         {
             if ( _pSetGestureConfig == null )
                 return false;
 
-            var configs = new[] { new GestureConfig( id, want, block )  };
+            var configs = new[] { new GestureConfig( 0, GestureConfigurationFlag.GC_ALLGESTURES, 0 ) };
+            return SetGestureConfig(hwnd, configs);
+        }
+
+        /// <summary>
+        /// Registers the HWND to receive specific gestures.
+        /// </summary>
+        /// <remarks>
+        /// http://msdn.microsoft.com/en-us/library/windows/desktop/dd353231%28v=vs.85%29.aspx
+        /// </remarks>
+        /// <param name="hwnd">The HWND.</param>
+        /// <param name="configs">The gesture configurations</param>
+        /// <returns></returns>
+        public static bool SetGestureConfig( IntPtr hwnd, GestureConfig[] configs )
+        {
             return _pSetGestureConfig( hwnd, 0, 1, configs, (uint)Marshal.SizeOf( typeof( GestureConfig ) ) );
         }
 

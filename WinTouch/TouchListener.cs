@@ -42,6 +42,8 @@ namespace Alteridem.WinTouch
         private double _lastRotation;
         private long _lastZoom;
 
+        private readonly GestureConfig[] m_configs;
+
         #endregion
 
         #region Public Events
@@ -56,10 +58,19 @@ namespace Alteridem.WinTouch
 
         #region Construction
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TouchListener"/> class to receive all gestures.
+        /// </summary>
+        /// <param name="parent">The parent.</param>
         public TouchListener( Control parent )
         {
             parent.HandleCreated += OnHandleCreated;
             parent.HandleDestroyed += OnHandleDestroyed;
+        }
+
+        public TouchListener( Control parent, GestureConfig[] configs ) : this( parent )
+        {
+            m_configs = configs;
         }
 
         #endregion
@@ -73,7 +84,14 @@ namespace Alteridem.WinTouch
             if ( control != null )
             {
                 AssignHandle( control.Handle );
-                NativeMethods.SetGestureConfig( control.Handle, 0, GestureConfigurationFlag.GC_ALLGESTURES, 0 );
+                if ( m_configs != null )
+                {
+                    NativeMethods.SetGestureConfig( control.Handle, m_configs );
+                }
+                else
+                {
+                    NativeMethods.SetGestureConfig( control.Handle );
+                }
             }
         }
 
