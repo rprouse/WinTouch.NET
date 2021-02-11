@@ -91,7 +91,7 @@ namespace Alteridem.WinTouch
         /// <returns></returns>
         public static bool SetGestureConfig( IntPtr hwnd, GestureConfig[] configs )
         {
-            return _pSetGestureConfig( hwnd, 0, 1, configs, (uint)Marshal.SizeOf( typeof( GestureConfig ) ) );
+            return _pSetGestureConfig( hwnd, 0, (uint)configs.Length, configs, (uint)Marshal.SizeOf( typeof( GestureConfig ) ) );
         }
 
         /// <summary>
