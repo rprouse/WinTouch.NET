@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>Alteridem.WinTouch</id>
+    <version>0.1.1</version>
+    <title>WinTouch.NET</title>
+    <authors>Rob Prouse</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/rprouse/WinTouch.NET</projectUrl>
+    <repository type="git" url="https://github.com/rprouse/WinTouch.NET.git" branch="master" />
+    <description>A .NET library for handling Windows 7/8/10 Touch Gestures in a WinForms application.
+
+It allows you to handle the following gestures,
+
+- Pan
+- Rotate
+- Zoom
+- Two Finger Tap
+- Press and Tap</description>
+    <summary>A .NET library for handling Windows 7/8/10 Touch Gestures in a WinForms application.</summary>
+    <copyright>Copyright 2021 Rob Prouse</copyright>
+    <tags>winforms touch gestures pan rotate zoom tap</tags>
+    <icon>images\icon.png</icon>
+    <dependencies>
+      <group targetFramework="net20">
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="images\nuget_icon.png" target="images\icon.png" />
+    <file src="WinTouch\bin\Release\WinTouch.dll" target="lib\net20\WinTouch.dll" />
+  </files>
+</package>

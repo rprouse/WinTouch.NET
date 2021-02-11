@@ -49,3 +49,4 @@ _ReSharper*/
 packages/
 
 testCaseCollection.xml
+*.nupkg
