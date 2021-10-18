@@ -74,6 +74,8 @@ namespace Alteridem.WinTouch
         /// <param name="configs">The gesture configurations.</param>
         public GestureListener( Control parent, GestureConfig[] configs )
         {
+            m_configs = configs;
+
             if ( parent.IsHandleCreated )
             {
                 Initialize( parent );
@@ -83,8 +85,6 @@ namespace Alteridem.WinTouch
                 parent.HandleCreated += OnHandleCreated;
             }
             parent.HandleDestroyed += OnHandleDestroyed;
-
-            m_configs = configs;
         }
 
         #endregion
